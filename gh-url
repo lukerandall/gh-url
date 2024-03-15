@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -e
+
+usage() {
+	echo "Usage: gh url <run|pr>"
+	echo
+	echo "Prints the requested URL for the current branch"
+}
+
+action="$1"
+
+case $action in
+run)
+	gh run list -b $(git rev-parse --abbrev-ref HEAD) --json url | jq '.[0].url' -r
+	;;
+pr)
+	gh pr view --json url -q .url
+	;;
+*)
+	usage
+	exit
+	;;
+esac
